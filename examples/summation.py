@@ -27,8 +27,8 @@ import numpy as np
 
 from videocore6.assembler import qpu
 from videocore6.driver import Driver
-
-
+# from ctypes import c_uint32 as uint32
+# from numpy import uint32 as uint32
 @qpu
 def qpu_summation(asm, *, num_qpus, unroll_shift, code_offset,
                   align_cond=lambda pos: pos % 512 == 170):
@@ -158,10 +158,12 @@ def summation(*, length, num_qpus=8, unroll_shift=2):
         assert sum(Y) == 0
 
         if unroll_shift == 0:
-            unif = drv.alloc(3 + 1 + 1, dtype='uint32')
+            # unif = drv.alloc(3 + 1 + 1, dtype='uint32')
+            unif = drv.alloc(3 + 1 + 1, dtype=np.int64)
             unif[3] = 0xfffffcfc
         else:
-            unif = drv.alloc(3 + (1 << (unroll_shift - 1)) + 1, dtype='uint32')
+            # unif = drv.alloc(3 + (1 << (unroll_shift - 1)) + 1, dtype='uint32')
+            unif = drv.alloc(3 + (1 << (unroll_shift - 1)) + 1, dtype=np.int64)
             unif[3: -1] = 0xfcfcfcfc
         unif[0] = length
         unif[1] = X.addresses()[0]
